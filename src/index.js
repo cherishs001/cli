@@ -76,6 +76,8 @@ const param = commond.splice(2);
                         const res = fs.readFileSync(path.join(process.cwd(), `${name}/package.json`), 'utf8');
                         const res2 = res.replace('${name}', name);
                         fs.writeFileSync(path.join(process.cwd(), `${name}/package.json`), res2);
+                        // 自动安装依赖
+                        shell.exec(`cd ${name} && npm install`);
                         shell.echo(`kaishen: finished.`);
                         shell.exit(0);
                     }, 3000);
