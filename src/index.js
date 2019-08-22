@@ -72,6 +72,10 @@ const param = commond.splice(2);
                     const targetDir = path.join(process.cwd(), name);
                     copy(sourceDir, targetDir);
                     setTimeout(() => {
+                        // 读取package.json, 修改项目名字
+                        const res = fs.readFileSync(path.join(process.cwd(), `${name}/package.json`), 'utf8');
+                        const res2 = res.replace('${name}', name);
+                        fs.writeFileSync(path.join(process.cwd(), `${name}/package.json`), res2);
                         shell.echo(`kaishen: finished.`);
                         shell.exit(0);
                     }, 3000);
