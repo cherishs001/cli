@@ -1,10 +1,10 @@
 {
   "name": "@kaishen/cli",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "bin": {
-    "kaishen": "./src/index.js"
+    "ksc": "./index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -20,8 +20,17 @@
   },
   "homepage": "https://github.com/cherishs001/server-cli#readme",
   "dependencies": {
+    "commander": "^7.1.0",
     "node-copydir": "^1.0.1",
     "readline": "^1.3.0",
     "shelljs": "^0.8.3"
+  },
+  "devDependencies": {
+    "cz-conventional-changelog": "^3.3.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
