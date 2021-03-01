@@ -48,18 +48,37 @@ function ProgressBar(description, bar_length) {
     };
 }
 
+function deleteFolder(filePath) {
+    const files = []
+    if (fs.existsSync(filePath)) {
+        const files = fs.readdirSync(filePath)
+        files.forEach((file) => {
+            const nextFilePath = `${filePath}/${file}`
+            const states = fs.statSync(nextFilePath)
+            if (states.isDirectory()) {
+                //recurse
+                deleteFolder(nextFilePath)
+            } else {
+                //delete file
+                fs.unlinkSync(nextFilePath)
+            }
+        })
+        fs.rmdirSync(filePath)
+    }
+}
+
 const downloadFile = (url, msg) => {
     return new Promise(async (resolve, reject) => {
         //下载 的文件 地址
         let fileURL = url;
         try {
-            await fs.promises.stat('./cache')
+            await fs.promises.stat('./.ksc-cache')
         } catch (e) {
             // 不存在文件夹，直接创建 {recursive: true} 这个配置项是配置自动创建多个文件夹
-            await fs.promises.mkdir('cache', { recursive: true })
+            await fs.promises.mkdir('.ksc-cache', { recursive: true })
         }
         //下载保存的文件路径
-        let fileSavePath = path.join('./cache', path.basename(fileURL));
+        let fileSavePath = path.join('./.ksc-cache', path.basename(fileURL));
         //缓存文件路径
         let tmpFileSavePath = fileSavePath + ".tmp";
         //创建写入流
@@ -103,6 +122,7 @@ const downloadFile = (url, msg) => {
 const utils = {
     readSyncByfs,
     downloadFile,
+    deleteFolder,
 };
 
 module.exports = utils;
