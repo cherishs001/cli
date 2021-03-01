@@ -20,10 +20,15 @@
   },
   "homepage": "https://github.com/cherishs001/server-cli#readme",
   "dependencies": {
+    "cli-progress": "^3.9.0",
     "commander": "^7.1.0",
+    "inquirer": "^8.0.0",
     "node-copydir": "^1.0.1",
+    "node-fetch": "^2.6.1",
+    "progress-stream": "^2.0.0",
     "readline": "^1.3.0",
-    "shelljs": "^0.8.3"
+    "shelljs": "^0.8.3",
+    "single-line-log": "^1.1.2"
   },
   "devDependencies": {
     "cz-conventional-changelog": "^3.3.0"
