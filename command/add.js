@@ -60,6 +60,8 @@ const add_action = async (option) => {
             }
             fs.writeFileSync(`./services/${file_name}.ts`, str);
         }
+    } else {
+        console.log('\033[41;30m ERROR \033[40;31m 项目结构不符合规范！\033[0m')
     }
 }
 
