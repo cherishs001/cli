@@ -2,7 +2,6 @@ const utils = require('./utils');
 const inquirer = require('inquirer');
 const fs = require('fs');
 const StreamZip = require('node-stream-zip');
-const { spawn } = require('child_process');
 
 const init_action = async (option) => {
     console.log('即将创建一个新项目！');
@@ -28,20 +27,10 @@ const init_action = async (option) => {
     fs.writeFileSync(`./${config.project_name}/package.json`, JSON.stringify(package, null, 2));
     utils.deleteFolder('./.ksc-cache')
     if (config.project_install) {
-        await npm_install(`./${config.project_name}`);
+        await utils.npm_install(`./${config.project_name}`, true);
     }
     const end_time = (new Date()).getTime();
     console.log('\033[42;30m DONE \033[40;32m 完成耗时 ' + (end_time - start_time) + 'ms\033[0m');
-}
-
-const npm_install = (dir) => {
-    return new Promise((resolve, reject) => {
-        const install = spawn(process.platform === "win32" ? "npm.cmd" : "npm", ['install'], { cwd: dir, stdio: 'inherit' });
-
-        install.on('close', (code) => {
-            resolve();
-        });
-    })
 }
 
 module.exports = init_action;

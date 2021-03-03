@@ -1,5 +1,6 @@
 const fs = require('fs')
 const slog = require('single-line-log').stdout;
+const { spawn } = require('child_process');
 
 const readSyncByfs = (tips) => {
     tips = tips || '> ';
@@ -48,23 +49,61 @@ function ProgressBar(description, bar_length) {
     };
 }
 
-function deleteFolder(filePath) {
-    const files = []
-    if (fs.existsSync(filePath)) {
-        const files = fs.readdirSync(filePath)
-        files.forEach((file) => {
-            const nextFilePath = `${filePath}/${file}`
-            const states = fs.statSync(nextFilePath)
-            if (states.isDirectory()) {
-                //recurse
-                deleteFolder(nextFilePath)
-            } else {
-                //delete file
-                fs.unlinkSync(nextFilePath)
-            }
-        })
-        fs.rmdirSync(filePath)
+const scanFolder = (filePath) => {
+    let nums = 0;
+
+    const scanFolder2 = (filePath) => {
+        if (fs.existsSync(filePath)) {
+            const files = fs.readdirSync(filePath)
+            files.forEach((file) => {
+                const nextFilePath = `${filePath}/${file}`
+                const states = fs.statSync(nextFilePath)
+                if (states.isDirectory()) {
+                    //recurse
+                    scanFolder2(nextFilePath)
+                } else {
+                    nums++;
+                }
+            })
+            nums++;
+        }
     }
+
+    scanFolder2(filePath);
+
+    return nums;
+}
+
+const deleteFolder = (filePath, opts) => {
+    let nums = 0;
+
+    const deleteFolder2 = (filePath, opts) => {
+        if (fs.existsSync(filePath)) {
+            const files = fs.readdirSync(filePath)
+            files.forEach((file) => {
+                const nextFilePath = `${filePath}/${file}`
+                const states = fs.statSync(nextFilePath)
+                if (states.isDirectory()) {
+                    //recurse
+                    deleteFolder2(nextFilePath)
+                    nums++;
+                    if (opts) {
+                        opts.pb.render({ completed: parseInt((nums / opts.nums) * 100), total: 100 });
+                    }
+                } else {
+                    //delete file
+                    fs.unlinkSync(nextFilePath)
+                    nums++;
+                    if (opts) {
+                        opts.pb.render({ completed: parseInt((nums / opts.nums) * 100), total: 100 });
+                    }
+                }
+            })
+            fs.rmdirSync(filePath)
+        }
+    }
+
+    deleteFolder2(filePath, opts);
 }
 
 const downloadFile = (url, msg) => {
@@ -119,10 +158,29 @@ const downloadFile = (url, msg) => {
     })
 }
 
+const npm_install = (dir, out) => {
+    let config = {};
+    if (out) {
+        config = { cwd: dir, stdio: 'inherit' };
+    } else {
+        config = { cwd: dir };
+    }
+    return new Promise((resolve, reject) => {
+        const install = spawn(process.platform === "win32" ? "npm.cmd" : "npm", ['install'], config);
+
+        install.on('close', (code) => {
+            resolve();
+        });
+    })
+}
+
 const utils = {
     readSyncByfs,
     downloadFile,
     deleteFolder,
+    scanFolder,
+    ProgressBar,
+    npm_install,
 };
 
 module.exports = utils;

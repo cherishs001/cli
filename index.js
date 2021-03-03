@@ -3,6 +3,7 @@ const { Command } = require('commander');
 const init_action = require('./command/init');
 const add_action = require('./command/add');
 const start_action = require('./command/start');
+const fix_action = require('./command/fix');
 
 const program = new Command();
 
@@ -25,6 +26,11 @@ program
     .command('start')
     .description('start project')
     .action(start_action)
+
+program
+    .command('fix')
+    .description('auto fix project config')
+    .action(fix_action)
 
 
 program.parse(process.argv);
