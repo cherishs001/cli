@@ -13,6 +13,7 @@ const fix_action = async () => {
     if (!package.scripts.hasOwnProperty('dev')) {
         package.scripts.dev = 'ts-node index.ts';
     }
+    fs.writeFileSync('./package.json', JSON.stringify(package, null, 2))
     pb.render({ completed: 100, total: 100 });
 }
 
