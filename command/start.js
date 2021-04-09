@@ -35,16 +35,29 @@ const start_action = async () => {
 
 const project_start = (env) => {
     return new Promise((resolve, reject) => {
-        const start = spawn(
-            `set NODE_ENV=${env}&&${process.platform === "win32" ? "npm.cmd run dev" : "npm run dev"}`,
-            {
-                shell: true,
-                stdio: 'inherit',
-            }
-        );
-        start.on('close', (code) => {
-            resolve();
-        });
+        if (process.platform === "win32") {
+            const start = spawn(
+                `set NODE_ENV=${env}&&${"npm.cmd run dev"}`,
+                {
+                    shell: true,
+                    stdio: 'inherit',
+                }
+            );
+            start.on('close', (code) => {
+                resolve();
+            });
+        } else {
+            const start = spawn(
+                `export NODE_ENV=${env}&&${"npm run dev"}`,
+                {
+                    shell: true,
+                    stdio: 'inherit',
+                }
+            );
+            start.on('close', (code) => {
+                resolve();
+            });
+        }
     })
 }
 

@@ -16,7 +16,7 @@ const init_action = async (option) => {
         console.log('\033[41;30m ERROR \033[40;31m 项目目录已经存在！\033[0m')
         return;
     }
-    await utils.downloadFile('https://github.com/cherishs001/cli/releases/download/1.0.0/server.zip', '从远程仓库拉取模板');
+    await utils.downloadFile('https://github.com/cherishs001/cli/releases/download/1.0.1/server.zip', '从远程仓库拉取模板');
     // 解压文件
     fs.mkdirSync(`./${config.project_name}`);
     const zip = new StreamZip.async({ file: `./.ksc-cache/${config.project_type}.zip` });
